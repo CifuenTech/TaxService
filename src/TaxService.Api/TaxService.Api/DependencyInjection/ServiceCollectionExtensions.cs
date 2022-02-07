@@ -19,7 +19,6 @@ namespace TaxService.Api.DependencyInjection
                     configuration.GetSection(RestfulServicesOptions.RestfulServicesConfiguration).Bind(restfulServiceOptions);
                     c.BaseAddress = new Uri(restfulServiceOptions.BaseAddress);
                     c.Timeout = restfulServiceOptions.Timeout;
-
                 });
 
             return services;

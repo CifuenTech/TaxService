@@ -7,7 +7,7 @@ namespace TaxService.Api.RemoteServices.TaxJar
 {
     public interface ISalesTaxApi
     {
-        [Get("/v2/rates")]
+        [Post("/v2/rates")]
         Task<GetTaxRatesResponse> GetTaxRatesForLocation(GetTaxRatesRequest request);
 
         [Post("/v2/taxes")]

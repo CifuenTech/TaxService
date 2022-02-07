@@ -14,18 +14,22 @@ namespace TaxService.Api.Controllers
     [Produces("application/json")]
     public class TaxCalculationController : ControllerBase
     {
+        private readonly ITaxCalculatorFactory _taxCalculatorFactory;
         private readonly ILogger<TaxCalculationController> _logger;
 
-        public TaxCalculationController(ITaxCalculator taxCalculator, ILogger<TaxCalculationController> logger)
+        public TaxCalculationController(ITaxCalculatorFactory taxCalculatorFactory, ILogger<TaxCalculationController> logger)
         {
+            _taxCalculatorFactory = taxCalculatorFactory; 
             _logger = logger;
         }
 
         [HttpGet]
-        public Customer GetRates(Address address)
+        public Task<IEnumerable<TaxRates>> GetTaxRates(string customerType, Address address)
         {
-            var taxCalculator = 
-            return new Customer();
+            var taxCalculator = _taxCalculatorFactory.CreateTaxCalculator(customerType);
+            var rates = taxCalculator.GetTaxRates(address);
+            
+            return rates;
         }
     }
 }

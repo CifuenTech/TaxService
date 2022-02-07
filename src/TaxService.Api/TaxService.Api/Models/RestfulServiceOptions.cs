@@ -6,6 +6,7 @@ namespace TaxService.Api.Models
     {
         public const string RestfulServicesConfiguration = "RestfulServicesConfiguration";
         public string BaseAddress { get; set; }
+        public string ApiKey { get; set; }
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(100);
     }
 }
