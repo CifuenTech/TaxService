@@ -10,7 +10,7 @@ namespace TaxService.Api.TaxCalculators
     //Sample alternative calculator based on Value Added Tax
     public class VatTaxCalculator : ITaxCalculator
     {
-        public async Task<OrderTaxes> CalculateTaxes(Order order)
+        public async Task<OrderTaxes> CalculateTaxesAsync(Order order)
         {
             var vatTax = (order.OrderAmount * 0.10m);
 
@@ -22,12 +22,12 @@ namespace TaxService.Api.TaxCalculators
             return orderTaxes;
         }
 
-        public async Task<TaxRate> GetTaxRate(string zipCode)
+        public async Task<TaxRate> GetTaxRateAsync(string zipCode)
         {
             var taxRate = new TaxRate
             {
                 CombinedRate = 0.10m,
-                Zip = zipCode
+                ZipCode = zipCode
             };
 
             return taxRate;

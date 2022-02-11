@@ -35,6 +35,8 @@ namespace TaxService.Api
             services.AddControllers()
                     .AddApiDocumentation();
 
+            //TODO Implement Exception Handler
+
             services.AddHttpContextAccessor();
 
             services.AddRemoteServices(Configuration);

@@ -30,30 +30,31 @@ namespace TaxService.Api.Controllers
         [ProducesResponseType(typeof(TaxRate), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetTaxRate(string zipCode)
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTaxRateAsync(string zipCode)
         {
             try
             {
-                var rates = await _taxCalculator.GetTaxRate(zipCode);
+                var rates = await _taxCalculator.GetTaxRateAsync(zipCode);
 
                 return Ok(rates);
             }
             catch (RemoteException ex)
             {
+                //Stack trace for remote errors logged internally and not returned to client for security purposes
                 _logger.LogError(ex, ex.Message);
+                //TODO Handle via middlewear, map type to ProblemDetail, and return stacktrace as detail if running on Development environment
                 return UnprocessableEntity(ex.Message);
-                //return FormatProblemDetails("Remote Error", StatusCodes.Status422UnprocessableEntity, ex.Message);
             }
             catch (ArgumentException ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return BadRequest(ex.Message);
-                //return FormatProblemDetails(ex.Message);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Problem(ex.Message);
+                return Problem(statusCode: StatusCodes.Status500InternalServerError, title: ex.Message);
             }
         }
 
@@ -61,11 +62,12 @@ namespace TaxService.Api.Controllers
         [ProducesResponseType(typeof(OrderTaxes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CalculateTaxes(Order order)
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CalculateTaxesAsync(Order order)
         {
             try
             {
-                var orderTaxes = await _taxCalculator.CalculateTaxes(order);
+                var orderTaxes = await _taxCalculator.CalculateTaxesAsync(order);
 
                 return Ok(orderTaxes);
             }
@@ -82,23 +84,19 @@ namespace TaxService.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Problem(ex.Message);
+                return Problem(statusCode: StatusCodes.Status500InternalServerError, title: ex.Message);
             }
         }
 
         [HttpGet("ping")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Ping()
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PingAsync()
         {
             if (_taxCalculator == null)
-                return BadRequest("CustomerTaxType provided is not supported or not configured properly."); //TODO Implement as a guard
+                return BadRequest("CustomerTaxType provided is not supported or not configured properly.");//TODO Implement as a guard
 
             return Ok("TaxService is up." );
-        }
-
-        private ProblemDetails FormatProblemDetails(string title, int statusCode, string message)
-        {
-            return new ProblemDetails();
         }
     }
 }

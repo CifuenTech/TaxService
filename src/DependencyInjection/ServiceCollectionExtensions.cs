@@ -37,14 +37,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddTaxCalculators(this IServiceCollection services)
         {
-            //Use reflection to register all implementations of ITaxCalculator automatically without changing 
+            //Use reflection to register all implementations of ITaxCalculator automatically without modifying startup 
             var taxCalculators = GetImplementions(typeof(ITaxCalculator), "TaxCalculator");
             foreach (var type in taxCalculators)
             {
                 services.TryAddTransient(type.Value);
             }
 
-            //Register the corresponding implementation of ITaxCalculator based on "customer" route paramter
+            //Register the corresponding implementation of ITaxCalculator based on "customer" route value, no need for factory class
             services.AddScoped<ITaxCalculator>(sp =>
             {
                 var context = sp.GetService<IHttpContextAccessor>().HttpContext;

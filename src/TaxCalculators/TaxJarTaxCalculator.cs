@@ -19,7 +19,36 @@ namespace TaxService.Api.TaxCalculators
             _salesTaxApi = salesTaxApi;
         }
 
-        public async Task<OrderTaxes> CalculateTaxes(Order order)
+        public async Task<TaxRate> GetTaxRateAsync(string zipCode)
+        {
+            if (string.IsNullOrEmpty(zipCode))
+                throw new ArgumentException("ZipCode is a required field.");
+
+            var request = new GetTaxRatesRequest
+            {
+                zip = zipCode
+            };
+
+            GetTaxRatesResponse response = null;
+
+            try
+            {
+                response = await _salesTaxApi.GetTaxRatesForLocation(request);
+            }
+            catch (ApiException ex)
+            {
+                throw new RemoteException("Could not retrieve tax rate.", ex);
+            }
+
+            if (response == null || response.rate == null)
+                throw new RemoteException("Could not retrieve tax rate.");
+
+            var taxRate = ParseTaxRates(response.rate);
+
+            return taxRate;
+        }
+
+        public async Task<OrderTaxes> CalculateTaxesAsync(Order order)
         {
             if (order == null)
                 throw new ArgumentException("Order is a required field.");
@@ -44,43 +73,20 @@ namespace TaxService.Api.TaxCalculators
             }
             catch (ApiException ex)
             {
-                throw new RemoteException("Could not retrieve tax rate.", ex);
+                throw new RemoteException("Could not calculate taxes for order.", ex);
             }
 
-            if (response == null)
-                throw new RemoteException("Could not retrieve order taxes.");
+            if (response == null || response.tax == null)
+                throw new RemoteException("Could not calculate taxes for order.");
 
             var salesTax = ParseOrderTaxes(response.tax);
 
             return salesTax;
         }
 
-        public async Task<TaxRate> GetTaxRate(string zipCode)
+        private TaxRate ParseTaxRates(Rate rate)
         {
-            if (string.IsNullOrEmpty(zipCode))
-                throw new ArgumentException("ZipCode is a required field.");
-
-            var request = new GetTaxRatesRequest
-            {
-                zip = zipCode
-            };
-
-            GetTaxRatesResponse response = null;
-
-            try
-            {
-                response = await _salesTaxApi.GetTaxRatesForLocation(request);
-            }
-            catch (ApiException ex)
-            {
-                throw new RemoteException("Could not retrieve tax rate.", ex);
-            }
-
-            if (response == null)
-                throw new RemoteException("No tax rate found for this ZipCode.");
-
-            var taxRate = ParseTaxRates(response.rate);
-
+            var taxRate = new TaxRate { ZipCode = rate.zip, CombinedRate = (decimal)rate.combined_rate };
             return taxRate;
         }
 
@@ -93,12 +99,6 @@ namespace TaxService.Api.TaxCalculators
             };
 
             return orderTaxes;
-        }
-
-        private TaxRate ParseTaxRates(Rate rate)
-        {
-            var taxRate = new TaxRate { Zip = rate.zip, CombinedRate = (decimal)rate.combined_rate };
-            return taxRate;
         }
     }
 }

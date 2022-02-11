@@ -8,12 +8,12 @@ namespace TaxService.Api.TaxCalculators
 {
     public class DefaultTaxCalculator : ITaxCalculator
     {
-        public Task<OrderTaxes> CalculateTaxes(Order order)
+        public Task<OrderTaxes> CalculateTaxesAsync(Order order)
         {
             throw new ArgumentException("CustomerTaxType provided is not supported or not configured properly.");
         }
 
-        public Task<TaxRate> GetTaxRate(string zipCode)
+        public Task<TaxRate> GetTaxRateAsync(string zipCode)
         {
             throw new ArgumentException("CustomerTaxType provided is not supported or not configured properly.");
         }

@@ -2,7 +2,7 @@
 {
     public class TaxRate
     {
-        public string Zip { get; set; }
+        public string ZipCode { get; set; }
         public decimal CombinedRate { get; set; }
     }
 }
