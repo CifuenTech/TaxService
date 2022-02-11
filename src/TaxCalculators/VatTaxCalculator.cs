@@ -16,7 +16,8 @@ namespace TaxService.Api.TaxCalculators
 
             var orderTaxes = new OrderTaxes
             {
-                TotalTax = vatTax
+                TotalTax = vatTax,
+                Rate = 0.10m
             };
 
             return orderTaxes;

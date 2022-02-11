@@ -89,7 +89,7 @@ namespace TaxService.Api.Controllers
         }
 
         [HttpGet("ping")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PingAsync()
         {
