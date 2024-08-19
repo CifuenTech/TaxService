@@ -6,3 +6,5 @@
         public decimal CombinedRate { get; set; }
     }
 }
+
+
