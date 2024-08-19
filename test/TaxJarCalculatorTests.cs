@@ -33,7 +33,7 @@ namespace TaxService.Api.Tests
             fixture.Customize(new CompositeCustomization(new AutoNSubstituteCustomization()));
             fixture.Customize<BindingInfo>(c => c.OmitAutoProperties());
 
-            //TODO Put this in a customization
+            //TODO Put this in a customization.
             var response = fixture.Create<GetTaxRatesResponse>();
 
             var salesTaxApi = Substitute.For<ISalesTaxApi>();
