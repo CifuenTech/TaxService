@@ -48,5 +48,5 @@ steps:
     azureSubscription: 'Azure subscription 1(701b3b6d-ccfc-431e-a235-d9b4c3795658)'
     appType: 'webApp'
     appName: 'TaxServiceApi20240818212245'
-    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    package: '$(System.ArtifactsDirectory)/**/*.zip'
     deploymentMethod: 'auto'
