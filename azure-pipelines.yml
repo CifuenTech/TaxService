@@ -33,16 +33,15 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: PublishBuildArtifacts@1
+- task: DotNetCoreCLI@2
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    command: 'publish'
+    publishWebProjects: true
 
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'Azure subscription 1(701b3b6d-ccfc-431e-a235-d9b4c3795658)'
     appType: 'webApp'
     appName: 'TaxServiceApi20240818212245'
-    package: '$(System.ArtifactStagingDirectory)/**/*.zip'
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
     deploymentMethod: 'auto'
