@@ -34,19 +34,15 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
-
-- task: DownloadBuildArtifacts@1
   inputs:
-    buildType: 'current'
-    downloadType: 'single'
-    artifactName: 'drop'
-    itemPattern: '**/*.zip'
-    downloadPath: '$(System.ArtifactsDirectory)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
 
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'Azure subscription 1(701b3b6d-ccfc-431e-a235-d9b4c3795658)'
     appType: 'webApp'
     appName: 'TaxServiceApi20240818212245'
-    package: '$(System.ArtifactsDirectory)/**/*.zip'
+    package: '$(System.ArtifactStagingDirectory)/**/*.zip'
     deploymentMethod: 'auto'
