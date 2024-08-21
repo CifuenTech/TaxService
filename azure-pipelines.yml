@@ -42,6 +42,6 @@ steps:
   inputs:
     azureSubscription: 'Azure subscription 1(701b3b6d-ccfc-431e-a235-d9b4c3795658)'
     appType: 'webApp'
-    appName: 'TaxServiceApi20240818212245'
+    appName: 'app-taxsvc-dev'
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
     deploymentMethod: 'auto'
